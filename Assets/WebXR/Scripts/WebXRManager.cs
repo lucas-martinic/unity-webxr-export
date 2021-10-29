@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.XR;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace WebXR
 {
@@ -119,7 +120,7 @@ namespace WebXR
 
         private void SetTrackingSpaceType()
         {
-            if (XRDevice.isPresent)
+            if (DevicePresent())
             {
                 XRDevice.SetTrackingSpaceType(TrackingSpace);
                 Debug.Log("Tracking Space: " + XRDevice.GetTrackingSpaceType());
@@ -259,6 +260,17 @@ namespace WebXR
                 leftViewMatrix,
                 rightViewMatrix,
                 sitStandMatrix);
+        }
+
+        private bool DevicePresent() {
+            var xrDisplaySubsystems = new List<XRDisplaySubsystem>();
+            SubsystemManager.GetInstances<XRDisplaySubsystem>(xrDisplaySubsystems);
+            foreach (var xrDisplay in xrDisplaySubsystems) {
+                if (xrDisplay.running) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
